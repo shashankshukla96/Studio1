@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dashboard</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Nunito:600|Roboto:400,500,700|Rubik&display=swap"
+        rel="stylesheet">
+
+        <script
+        src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+        crossorigin="anonymous"></script>
+    
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+        integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!-- Numeric JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/numeric/1.2.6/numeric.min.js"></script>
+    <style>
+        .row {
+            margin: 0;
+        }
+
+        .p-font {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .btn-menu {
+            padding: 0 1rem;
+        }
+
+        .btn-menu:hover {
+            cursor: pointer;
+        }
+
+        .side-nav {
+            min-width: 256px;
+            box-shadow: 0 10px 6px rgba(0, 0, 0, .18);
+            background-color: white;
+            z-index: 2;
+            transform: translateX(-300px);
+            position: absolute;
+            top: 0px;
+            height: 100%;
+        }
+
+        .list-group {
+            margin: 1rem .35rem;
+        }
+
+        .list-item,
+        .list-item--active {
+            font-family: 'Roboto', sans-serif;
+            font-size: .9rem;
+            font-weight: 500;
+            border-radius: 2px;
+            margin: .25rem 0;
+        }
+
+        .list-item--active {
+            background-color: #f1f9ff;
+        }
+
+        .list-item:hover {
+            background-color: whitesmoke;
+        }
+
+        .list-item--active:hover {
+            background-color: #e6f4ff;
+        }
+
+        .list-item a {
+            color: black;
+            opacity: .5;
+        }
+
+        .list-item--active a,
+        .list-item--active i {
+            color: #0091ff;
+        }
+
+        .list-item i,
+        .list-item--active i {
+            padding-right: 1rem;
+            font-size: 30px;
+        }
+
+        .navbar {
+            padding: .75rem 2rem;
+            align-items: center;
+        }
+
+        .navbar>a[class~='logo'],
+        .nav>div>.logo {
+            color: black;
+            font-family: sans-serif;
+            font-weight: bold;
+            padding: 0 1rem;
+        }
+
+        .nav>div>.logo {
+            padding: 1rem 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .navbar>.profile {
+            padding: .25rem;
+            background-color: #F1F9FF;
+            border-radius: 50%;
+        }
+
+
+        @keyframes slide-in {
+            0% {
+                transform: translateX(-300px);
+            }
+
+            100% {
+                transform: translateX(0px);
+            }
+        }
+
+        @keyframes slide-out {
+            0% {
+                transform: translateX(0px);
+            }
+
+            100% {
+                transform: translateX(-600px);
+            }
+        }
+
+        @keyframes slide-in-arrow {
+            0% {
+                transform: translateX(0px);
+            }
+
+            100% {
+                transform: translateX(5px);
+            }
+        }
+
+        @keyframes slide-out-arrow {
+            0% {
+                transform: translateX(5px);
+            }
+
+            100% {
+                transform: translateX(0px);
+            }
+        }
+
+        .welcome-dock {
+            padding: 4rem 0;
+            background-color: rgb(217, 238, 255);
+            font-family: sans-serif;
+        }
+
+        .welcome-dock h3 {
+            font-weight: 600;
+        }
+
+        .welcome-dock .col-12 {
+            display: flex;
+            flex-flow: column;
+            padding: 1rem 0;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-dock {
+            margin: 3rem 0;
+        }
+
+        .main-dock>.col-12 {
+            padding: 3rem 0;
+            z-index: 1;
+            width: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .flex-cs {
+            display: flex;
+            align-items: center;
+            justify-content: start;
+        }
+
+        .btn-group a:hover {
+            background-color: whitesmoke;
+        }
+
+        .btn-cta {
+            background-color: transparent;
+            color: #2699FB;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+            padding: .75rem 1.9rem;
+            border: 1.5px solid #2699FB;
+            border-radius: 4px;
+            align-items: center;
+            margin-top: 5rem;
+        }
+
+        .table {
+            opacity: .8;
+            font-size: .9rem
+        }
+
+        .table>thead {
+            font-family: sans-serif;
+            font-size: .9rem;
+            opacity: .5;
+        }
+
+        .table .progress {
+            height: .35rem;
+            min-width: 200px;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+
+        .info-table tr {
+            border-bottom: .5px solid #eeeeee;
+            padding: 4rem 0;
+        }
+
+        tr:last-child {
+            border: none;
+        }
+
+        .table-responsive {
+            display: block;
+            width: auto;
+        }
+
+        .custom-card {
+            border: 1px solid rgba(0, 0, 0, .18);
+            font-family: sans-serif;
+            border-radius: 5px;
+        }
+
+        .card-info {
+            padding: 2rem 1rem;
+        }
+
+        .card-info>h4 {
+            font-weight: bold;
+        }
+
+        .card-info>.progress {
+            margin-top: 2rem;
+            height: .25rem;
+        }
+
+        .card-info>span {
+            display: flex;
+            align-items: center;
+        }
+
+        .card-info>span>*,
+        .card-meta>p {
+            opacity: .6;
+            font-weight: 600;
+            font-size: .75rem;
+        }
+
+        .card-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: .5rem 1rem;
+            border-top: 1px solid rgba(0, 0, 0, .18);
+        }
+
+        .card-dock>.row {
+            margin: 3rem 0;
+        }
+
+        .card-dock>.row {
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dropup .dropdown-toggle::after,
+        .dropdown .dropdown-toggle::after {
+            display: none;
+        }
+
+        .dropdown-toggle:hover {
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            left: -100px !important;
+        }
+
+        .btn-group a {
+            font-family: 'Roboto', sans-serif;
+            font-size: .9rem;
+            font-weight: 500;
+            margin: .25rem 0;
+            padding: .75rem 1rem;
+        }
+
+        input::-webkit-input-placeholder,
+        .custom-file-label,
+        .form-control {
+            font-family: sans-serif;
+            font-size: .9rem;
+        }
+
+        .modal .row {
+            flex-wrap: nowrap;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-control {}
+
+        div[class~='modal'] .row {
+            flex-wrap: wrap;
+        }
+
+        .wrapper {
+            margin: 3rem 0;
+            display: grid;
+            grid-auto-rows: auto;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            grid-gap: 1em;
+        }
+
+        .btn-pop-up>i {
+            opacity: .7;
+            color: black;
+            transform: rotate(-45deg);
+            border: none;
+            padding: .25rem;
+            border-radius: 50%;
+            transition: .2s;
+        }
+
+        .btn-pop-up>i:hover {
+            background: gainsboro;
+        }
+
+        .modal-header {
+            border: none;
+            font-family: -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-weight: 500;
+            margin: 0;
+            background-color: rgb(217, 238, 255);
+            padding: 1rem 1.75rem;
+        }
+
+        .modal-header>* {
+            font-family: inherit;
+        }
+
+        .modal-header>h6 {
+            margin-bottom: 0;
+        }
+
+        .btn-download,
+        .btn-submit {
+            border: 1px solid rgba(0, 0, 0, .18);
+            border-radius: 5px;
+            background-color: #F1F9FF;
+            padding: .5rem .75rem;
+        }
+
+        .btn-submit {
+            background-color: #0091ff;
+        }
+    </style>
+</head>
+
+<body>
+
+
+
+    <nav class="nav flex-column side-nav" id="side-nav">
+        <div class="" id="side-nav-logo">
+            <a class="navbar-brand logo" href="design-team.html">Scrippy</a>
+        </div>
+
+        <ul class="list-group">
+            
+            <li class="list-item">
+                <a class="nav-link flex-cs" href="#" id="side-nav-link"><i
+                        class="material-icons">show_chart</i>Analysis</a>
+            </li>
+        </ul>
+    </nav>
+
+    <nav class="navbar navbar-expand-lg">
+        <span class="d-flex btn-menu">
+            <i class="material-icons" id="material-icons">menu</i>
+        </span>
+        <a class="navbar-brand logo" href="design-team.html">Scrippy</a>
+        <span class="d-flex ml-auto profile">
+            <i class="material-icons">person_outline</i>
+        </span>
+    </nav>
+
+    <div class="welcome-dock">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h3 class="text-center">Welcome to Scrippy!</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-6 offset-3"  id="myDiv">
+            </div>
+        </div>
+    </div>
+  <script>
+
+var request = new XMLHttpRequest();
+a = 0
+b = 0
+c = 0
+d = 0
+e = 0
+f = 0
+
+
+request.open('GET', 'http://localhost:3000/educators', true);
+request.onload = function () {
+
+  // Begin accessing JSON data here
+  data = JSON.parse(this.response);
+  root = document.getElementById("wrapper-dock");
+    
+  console.log(data.count);
+  if (request.status >= 200 && request.status < 400) {
+ 
+    for(let i= 0 ; i < data.count ; i ++)
+    {
+        // console.log(i,'--',data.educators[i].status)    
+        if(data.educators[i].status === 1)
+            {a += 1}
+        else if(data.educators[i].status === 2)
+            {b+= 1}
+        else if(data.educators[i].status === 3)
+            {c+= 1}
+        else if(data.educators[i].status === 4)
+            {d+= 1}
+        else if(data.educators[i].status === -1)
+            {e+= 1}
+        else if(data.educators[i].status === 0)
+            {f+= 1}
+        
+    }
+    var data = [{
+    values: [f, a, b, c, d, e],
+    labels: ['Pending for Review', 'Pending for Pre-production', 'Pending For Video Shooting', 'Post Production Pending', 'Video Review Pending', 'Rejected'],
+    type: 'pie'
+    }];
+
+    Plotly.newPlot('myDiv', data, {}, {showSendToCloud:true});  
+    
+
+} else {
+    console.log("error");
+  }
+}
+request.send();
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+
+<script>
+
+    let side_nav_status = false;
+    let spin_status = false;
+
+    $(document).ready(function () {
+
+    });
+
+    $(document).click(function (e) {
+        const side_nav = $('.side-nav');
+        const btn_menu = $('.btn_menu');
+
+        if ($(event.target).attr('id') == undefined && side_nav_status == true) {
+            side_nav.css('animation', 'slide-out .3s linear forwards');
+        }
+
+    });
+
+    $('.btn-menu').click(function () {
+        const side_nav = $('.side-nav');
+
+        if (side_nav_status == false) {
+            side_nav.css('animation', 'slide-in .3s cubic-bezier(0.4,0.0,0.2,1) forwards');
+            side_nav_status = true;
+        }
+
+        else {
+            side_nav.css('animation', 'slide-out .3s cubic-bezier(0.4,0.0,0.2,1) forwards');
+            side_nav_status = false;
+        }
+    });
+
+    $('.btn-cta').hover(function () {
+        $('#btn-cta-arrow').css('transform', 'translateX(5px)');
+        $('#btn-cta-arrow').css('animation', 'slide-in-arrow .2s cubic-bezier(0.4,0.0,0.2,1) forwards');
+    },
+        function () {
+            $('#btn-cta-arrow').css('transform', 'translateX(0px)');
+            $('#btn-cta-arrow').css('animation', 'slide-out-arrow .2s cubic-bezier(0.4,0.0,0.2,1) forwards');
+        });
+
+    $('.btn-submit').on('click', function () {
+        $('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true">').appendTo($(this));
+        spin_status = true;
+        $(this).attr('disabled', 'disabled');
+
+    });
+
+</script>
+
+</html>
